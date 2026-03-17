@@ -345,6 +345,7 @@ impl<RXID: PinId, TXID: PinId, PIO: PIOExt> PioUart<RXID, TXID, PIO, pio::Stoppe
             _sm3: self._sm3,
         }
     }
+
     /// Frees the underlying resources, returning the PIO instance and pins.
     /// Also uninstalls the UART programs.
     ///
@@ -505,5 +506,24 @@ impl<RXID: PinId, TXID: PinId, PIO: PIOExt> embedded_io::Write
     }
     fn flush(&mut self) -> Result<(), Self::Error> {
         embedded_io::Write::flush(&mut self.tx)
+    }
+}
+
+impl<RXID: PinId, TXID: PinId, PIO: PIOExt> PioUart<RXID, TXID, PIO, pio::Running> {
+    /// Clears the TX and RX FIFOs
+    pub fn clear_rx_fifo(&mut self) {
+        self.rx.sm.clear_fifos();
+    }
+
+    /// Clears the TX and RX FIFOs
+    #[inline]
+    pub fn has_data(&mut self) -> bool {
+        !self.rx.rx.is_empty()
+    }
+
+    /// Clears the TX and RX FIFOs
+    #[inline]
+    pub fn is_empty(&mut self) -> bool {
+        self.rx.rx.is_empty()
     }
 }
