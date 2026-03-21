@@ -515,6 +515,16 @@ impl<RXID: PinId, TXID: PinId, PIO: PIOExt> PioUart<RXID, TXID, PIO, pio::Runnin
         self.rx.sm.clear_fifos();
     }
 
+    /// Enable interrupts
+    pub fn enable_interrupts(&mut self) {
+        self.rx.rx.enable_rx_not_empty_interrupt(pio::PioIRQ::Irq0);
+    }
+
+    /// Disable interrupts
+    pub fn disable_interrupts(&mut self) {
+        self.rx.rx.disable_rx_not_empty_interrupt(pio::PioIRQ::Irq0);
+    }
+
     /// Clears the TX and RX FIFOs
     #[inline]
     pub fn has_data(&mut self) -> bool {
